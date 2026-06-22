@@ -76,6 +76,15 @@
 
   .req{color:#c0563a;font-weight:700}
 
+  /* consultation request form */
+  .chips{display:flex;flex-wrap:wrap;gap:9px;margin-top:4px}
+  .chip{background:var(--white);border:1px solid var(--line);border-radius:30px;color:var(--ink);padding:9px 16px;font-size:14px;cursor:pointer;font-weight:600;transition:all .12s}
+  .chip:hover{border-color:var(--leaf);color:var(--leaf-dk)}
+  .chip.active{background:var(--leaf);border-color:var(--leaf);color:#fff}
+  .field textarea{width:100%;background:var(--white);border:1px solid var(--line);border-radius:11px;color:var(--ink);padding:14px 15px;font-family:inherit;font-size:15px;outline:none;resize:vertical;transition:border-color .14s,box-shadow .14s}
+  .field textarea:focus{border-color:var(--leaf);box-shadow:0 0 0 3px rgba(95,141,90,.15)}
+  .consult-note{background:var(--mint);border-radius:11px;padding:13px 15px;font-size:13.5px;color:var(--leaf-dk);line-height:1.55;margin-top:4px}
+
   .divider{display:flex;align-items:center;justify-content:center;gap:16px;padding:6px 0 0}
   .divider .ln{height:1px;width:90px;background:var(--line)}
   .divider svg{width:30px;height:30px;color:var(--leaf);opacity:.8}
@@ -257,8 +266,16 @@
     <div class="book-grid">
       <div id="formCol">
         <div class="field"><label for="svcSelect">Service</label><select id="svcSelect"></select></div>
-        <div class="field"><label for="dateInput">Date</label><input type="date" id="dateInput"></div>
-        <div class="field"><label>Time</label><div class="slots" id="slots"><div class="slot-empty">Pick a date to see available times.</div></div></div>
+        <div id="slotFields">
+          <div class="field"><label for="dateInput">Date</label><input type="date" id="dateInput"></div>
+          <div class="field"><label>Time</label><div class="slots" id="slots"><div class="slot-empty">Pick a date to see available times.</div></div></div>
+        </div>
+        <div id="consultFields" style="display:none">
+          <div class="field"><label>Hair length <span class="req">*</span></label><div class="chips" id="qLength"></div></div>
+          <div class="field"><label>Has your hair been chemically treated before? <span class="req">*</span> <span style="text-transform:none;letter-spacing:0;color:var(--muted);font-weight:400">(select all that apply)</span></label><div class="chips" id="qHistory"></div></div>
+          <div class="field"><label id="qResultLabel">What result are you after? <span class="req">*</span></label><div class="chips" id="qResult"></div></div>
+          <div class="field"><label for="qMessage">Anything else we should know? <span style="text-transform:none;letter-spacing:0;color:var(--muted);font-weight:400">(optional)</span></label><textarea id="qMessage" rows="4" placeholder="Desired shade, photos you'll bring, allergies, budget, preferred days/times…"></textarea></div>
+        </div>
         <div class="field"><label for="nameInput">Your name <span class="req">*</span></label><input type="text" id="nameInput" placeholder="First and last name" required></div>
         <div class="field"><label for="phoneInput">Mobile <span class="req">*</span></label><input type="tel" id="phoneInput" placeholder="04XX XXX XXX" required></div>
         <div class="field"><label for="emailInput">Email <span class="req">*</span> <span style="text-transform:none;letter-spacing:0;color:var(--muted);font-weight:400">(for your confirmation)</span></label><input type="email" id="emailInput" placeholder="you@example.com" required></div>
@@ -268,9 +285,10 @@
           <h3>Your Booking</h3>
           <div class="sum-line"><span class="k">Service</span><span class="v" id="sumSvc">—</span></div>
           <div class="sum-line"><span class="k">With</span><span class="v">Adam Ma</span></div>
-          <div class="sum-line"><span class="k">When</span><span class="v" id="sumWhen">—</span></div>
-          <div class="sum-line"><span class="k">Duration</span><span class="v" id="sumDur">—</span></div>
-          <div class="sum-total"><span class="k">Total</span><span class="v" id="sumTotal">—</span></div>
+          <div class="sum-line" id="rowWhen"><span class="k">When</span><span class="v" id="sumWhen">—</span></div>
+          <div class="sum-line" id="rowDur"><span class="k">Duration</span><span class="v" id="sumDur">—</span></div>
+          <div class="sum-total" id="rowTotal"><span class="k">Total</span><span class="v" id="sumTotal">—</span></div>
+          <div class="consult-note" id="consultNote" style="display:none">After you send this, Adam will review your request and contact you within 24 hours to confirm the details and pricing.</div>
           <button class="btn confirm-btn" id="confirmBtn" disabled>Confirm booking</button>
           <div class="bookmsg" id="bookMsg"></div>
           <p class="hint" id="bookHint">You'll receive a confirmation email with a link to cancel any time.</p>
@@ -281,7 +299,7 @@
           <p id="doneLine1">—</p>
           <p id="doneLine2">548 Portrush Rd, Glen Osmond SA 5064</p>
           <p class="hint" id="doneHint"></p>
-          <div class="cal-actions">
+          <div class="cal-actions" id="calActions">
             <a class="btn" id="googleBtn" target="_blank" rel="noopener">Add to Google Calendar</a>
             <a class="btn ghost" id="icsBtn">Download .ics file</a>
           </div>
@@ -318,7 +336,8 @@ const LIVE = !/PASTE_YOUR/.test(SCRIPT_URL);
 
 const SALON = { name:"Spiky Hair Salon", barber:"Adam Ma", location:"548 Portrush Rd, Glen Osmond SA 5064" };
 const HOURS = { 0:null, 1:[600,1020], 2:null, 3:[600,810], 4:[600,1020], 5:[600,1020], 6:[600,960] };
-const SLOT_STEP = 30;
+const SLOT_STEP = 15;
+const LUNCH = [720, 750]; // daily break, minutes from midnight: 12:00–12:30 (set to null for none)
 
 /* price: number sent to backend; priceText: optional display override */
 const SERVICES = [
@@ -329,11 +348,18 @@ const SERVICES = [
   {id:"restyle",   name:"Ladies' Restyle",      price:63, mins:75, desc:"A fresh new shape, washed and styled."},
   {id:"child",     name:"Child Cut (under 12)", price:22, priceText:"$22+", mins:30, desc:"Patient, gentle cuts for little ones."},
   {id:"fringe",    name:"Fringe Cut",           price:17, mins:15, desc:"A quick fringe tidy-up."},
-  {id:"dye",       name:"Hair Dye",             price:0,  priceText:"On consultation", mins:120, desc:"Colour — final price confirmed in salon."},
-  {id:"perm",      name:"Perm / Straightening", price:0,  priceText:"On consultation", mins:120, desc:"Perm, straightening or curl — quoted in salon."}
+  {id:"dye",       name:"Hair Dye",             price:0,  priceText:"On consultation", mins:120, desc:"Colour — final price confirmed in salon.", consult:true,
+                   resultLabel:"What result are you after?",
+                   resultOptions:["All-over colour","Root touch-up","Highlights or balayage","Fashion colour","Colour correction","Not sure — need advice"]},
+  {id:"perm",      name:"Perm / Straightening", price:0,  priceText:"On consultation", mins:120, desc:"Perm, straightening or curl — quoted in salon.", consult:true,
+                   resultLabel:"What would you like?",
+                   resultOptions:["Add curl (perm)","Straighten","Soften / relax","Not sure — need advice"]}
 ];
 
-let state = { svc:SERVICES[0], date:"", time:"", busy:[], loading:false };
+const LENGTHS = ["Short","Medium","Long"];
+const HISTORIES = ["Never treated","Coloured","Bleached or highlighted","Permed or straightened"];
+
+let state = { svc:SERVICES[0], date:"", time:"", busy:[], loading:false, consult:{length:"",history:[],result:"",message:""} };
 
 const $ = s => document.querySelector(s);
 const pad = n => String(n).padStart(2,"0");
@@ -408,7 +434,8 @@ function renderSlots(){
     const past = isToday && t <= nowMins + 15;
     const slotEnd = t + dur;
     const taken = state.busy.some(b => t < b.e && slotEnd > b.s);
-    const off = past || taken;
+    const lunch = LUNCH && t < LUNCH[1] && slotEnd > LUNCH[0];
+    const off = past || taken || lunch;
     const active = state.time===String(t);
     html += `<div class="slot ${off?'disabled':''} ${active?'active':''}" data-t="${off?'':t}">${minsToLabel(t)}</div>`;
     if(!off) count++;
@@ -429,7 +456,13 @@ function updateSummary(){
   validate();
 }
 function validate(){
-  const ok = state.date && state.time && $("#nameInput").value.trim() && $("#phoneInput").value.trim() && /\S+@\S+\.\S+/.test($("#emailInput").value.trim());
+  const contactOk = $("#nameInput").value.trim() && $("#phoneInput").value.trim() && /\S+@\S+\.\S+/.test($("#emailInput").value.trim());
+  let ok;
+  if(state.svc.consult){
+    ok = contactOk && state.consult.length && state.consult.history.length>0 && state.consult.result;
+  } else {
+    ok = contactOk && state.date && state.time;
+  }
   $("#confirmBtn").disabled = !ok || state.loading;
 }
 function showMsg(t){ const m=$("#bookMsg"); m.textContent=t; m.classList.add("show"); }
@@ -455,6 +488,7 @@ function googleLink(){
 
 async function confirmBooking(){
   clearMsg();
+  if(state.svc.consult){ return sendRequest(); }
   if(!LIVE){ showConfirmed(true); return; }
   const btn=$("#confirmBtn"); btn.disabled=true; const label=btn.textContent; btn.textContent="Booking…";
   const payload = {
@@ -472,8 +506,41 @@ async function confirmBooking(){
   finally{ btn.textContent=label; validate(); }
 }
 
+async function sendRequest(){
+  if(!LIVE){ showRequestSent(true); return; }
+  const btn=$("#confirmBtn"); btn.disabled=true; const label=btn.textContent; btn.textContent="Sending…";
+  const payload = {
+    type:"request",
+    service:state.svc.name,
+    name:$("#nameInput").value.trim(), phone:$("#phoneInput").value.trim(), email:$("#emailInput").value.trim(),
+    length:state.consult.length, history:state.consult.history,
+    result:state.consult.result, message:$("#qMessage").value.trim()
+  };
+  try{
+    const res = await fetch(SCRIPT_URL, { method:"POST", body:JSON.stringify(payload) });
+    const data = await res.json();
+    if(data && data.ok){ showRequestSent(false); }
+    else { showMsg("We couldn't send your request. Please try again, or call the salon."); }
+  }catch(err){ showMsg("Network problem — request not sent. Please try again."); }
+  finally{ btn.textContent=label; validate(); }
+}
+
+function showRequestSent(prototype){
+  $("#doneCard").querySelector("h3").textContent = "Request sent!";
+  $("#doneLine1").textContent = state.svc.name + " — consultation request received";
+  $("#doneLine2").style.display = "none";
+  $("#calActions").style.display = "none";
+  $("#doneHint").textContent = prototype
+    ? "Preview mode — in real use, Adam would be emailed your request."
+    : "Thank you! Adam will review your request and contact you within 24 hours to confirm the details and pricing.";
+  $("#summaryCard").style.display="none"; $("#doneCard").classList.add("show");
+}
+
 function showConfirmed(prototype){
   const name=$("#nameInput").value.trim();
+  $("#doneCard").querySelector("h3").textContent = "You're booked!";
+  $("#doneLine2").style.display = "block";
+  $("#calActions").style.display = "flex";
   $("#doneLine1").textContent = `${state.svc.name} · ${prettyDate(state.date)} at ${minsToLabel(Number(state.time))} with ${SALON.barber}`;
   $("#doneHint").textContent = prototype
     ? "Preview mode — add it to your own calendar below."
@@ -487,13 +554,59 @@ function resetBooking(){
   $("#doneCard").classList.remove("show"); $("#summaryCard").style.display="block"; clearMsg();
   ["nameInput","phoneInput","emailInput"].forEach(id=>$("#"+id).value="");
   state.time=""; state.date=""; $("#dateInput").value=""; state.busy=[];
-  renderSlots(); updateSummary(); $("#book").scrollIntoView({behavior:"smooth"});
+  onServiceChange();
+  $("#book").scrollIntoView({behavior:"smooth"});
 }
-function onServiceChange(){ state.svc=SERVICES.find(s=>s.id===$("#svcSelect").value); state.time=""; renderSlots(); updateSummary(); }
+function renderChips(id, options, multi, key){
+  const box=$("#"+id);
+  box.innerHTML = options.map(o=>`<div class="chip" data-v="${o.replace(/"/g,'&quot;')}">${o}</div>`).join("");
+  box.querySelectorAll(".chip").forEach(el=>{
+    el.addEventListener("click",()=>{
+      const v=el.dataset.v;
+      if(multi){
+        const arr=state.consult[key]; const i=arr.indexOf(v);
+        if(i>=0){ arr.splice(i,1); el.classList.remove("active"); }
+        else { arr.push(v); el.classList.add("active"); }
+      } else {
+        state.consult[key]=v;
+        box.querySelectorAll(".chip").forEach(c=>c.classList.remove("active"));
+        el.classList.add("active");
+      }
+      validate();
+    });
+  });
+}
+
+function setMode(){
+  const consult = !!state.svc.consult;
+  $("#slotFields").style.display   = consult ? "none" : "block";
+  $("#consultFields").style.display= consult ? "block" : "none";
+  $("#rowWhen").style.display      = consult ? "none" : "flex";
+  $("#rowDur").style.display       = consult ? "none" : "flex";
+  $("#rowTotal").style.display     = consult ? "none" : "flex";
+  $("#consultNote").style.display  = consult ? "block" : "none";
+  $("#bookHint").style.display     = consult ? "none" : "block";
+  $("#confirmBtn").textContent     = consult ? "Send request" : "Confirm booking";
+}
+
+function onServiceChange(){
+  state.svc=SERVICES.find(s=>s.id===$("#svcSelect").value);
+  state.time="";
+  if(state.svc.consult){
+    state.consult={length:"",history:[],result:"",message:""};
+    if($("#qMessage")) $("#qMessage").value="";
+    renderChips("qLength", LENGTHS, false, "length");
+    renderChips("qHistory", HISTORIES, true, "history");
+    $("#qResultLabel").innerHTML = (state.svc.resultLabel||"What result are you after?")+' <span class="req">*</span>';
+    renderChips("qResult", state.svc.resultOptions||[], false, "result");
+  }
+  setMode();
+  renderSlots(); updateSummary();
+}
 
 function init(){
   $("#yr").textContent=new Date().getFullYear();
-  renderServices(); fillSelect(); setupDate(); updateSummary();
+  renderServices(); fillSelect(); setupDate(); updateSummary(); setMode();
   if(!LIVE){ $("#bookHint").textContent="Preview mode — add the booking to your own calendar after confirming."; }
   $("#svcSelect").addEventListener("change", onServiceChange);
   $("#dateInput").addEventListener("change", e=>{ state.date=e.target.value; state.time=""; clearMsg(); loadAvailability(); updateSummary(); });
