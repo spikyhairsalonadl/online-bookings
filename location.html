@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Meet Adam — Spiky Hair Salon</title>
+<title>Find Us — Spiky Hair Salon</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
@@ -24,42 +24,37 @@
   .nav{display:flex;align-items:center;justify-content:space-between;padding:22px 0}
   .brand{display:flex;align-items:center;gap:11px;font-weight:700;letter-spacing:.04em;font-size:15px;color:var(--moss);text-transform:uppercase;text-decoration:none}
   .brand .leaf-mark{width:26px;height:26px}
-  .nav-links{display:flex;align-items:center;gap:24px}
+  .nav-links{display:flex;align-items:center;gap:22px}
   .nav-links a{font-size:14.5px;color:var(--muted);text-decoration:none;font-weight:600}
   .nav-links a:hover{color:var(--leaf-dk)}
   .btn{display:inline-flex;align-items:center;gap:9px;font-weight:700;font-size:15px;padding:12px 24px;border:none;cursor:pointer;background:var(--leaf);color:#fff !important;text-decoration:none;border-radius:40px;transition:transform .15s,background .15s,box-shadow .15s;box-shadow:0 8px 22px -10px rgba(95,141,90,.7)}
   .btn:link,.btn:visited,.btn:hover,.btn:active{color:#fff !important}
   .btn:hover{background:var(--leaf-dk);transform:translateY(-2px)}
+  .btn.ghost{background:transparent;color:var(--leaf-dk) !important;border:1.5px solid var(--line);box-shadow:none}
+  .btn.ghost:link,.btn.ghost:visited,.btn.ghost:hover,.btn.ghost:active{color:var(--leaf-dk) !important}
+  .btn.ghost:hover{border-color:var(--leaf);background:var(--mint);transform:none}
 
-  .about{padding:80px 0 70px;position:relative;overflow:hidden}
-  .sprig{position:absolute;top:-30px;right:-30px;width:220px;opacity:.4;transform:rotate(14deg);pointer-events:none}
-  .about-grid{display:grid;grid-template-columns:.85fr 1.15fr;gap:48px;align-items:center;position:relative}
-  @media(max-width:760px){.about-grid{grid-template-columns:1fr;gap:32px}}
-
-  .portrait{position:relative;border-radius:20px;overflow:hidden;box-shadow:var(--soft-shadow);aspect-ratio:4/5;background:linear-gradient(160deg,#e8f1e6,#d2e4cf);display:flex;align-items:center;justify-content:center}
-  .portrait img{width:100%;height:100%;object-fit:cover;display:block}
-  .portrait .ph{position:absolute;font-family:"Cormorant Garamond",serif;font-size:90px;color:#a7c3a1}
-  .portrait .ph svg{width:70px;height:70px;color:#9cbd96}
-
-  .eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--leaf);font-weight:700;margin-bottom:16px}
+  .findus{padding:72px 0 20px;position:relative;overflow:hidden}
+  .sprig{position:absolute;top:-30px;right:-30px;width:210px;opacity:.4;transform:rotate(14deg);pointer-events:none}
+  .head{text-align:center;max-width:600px;margin:0 auto;position:relative}
+  .eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--leaf);font-weight:700;margin-bottom:14px}
   .eyebrow svg{width:14px;height:14px}
-  .about h1{font-size:clamp(46px,7vw,76px);color:var(--moss)}
-  .about .role{font-size:17px;color:var(--leaf-dk);font-weight:600;margin-top:6px}
-  .about p{color:var(--ink);font-size:16.5px;margin-top:18px;max-width:52ch}
-  .about p.soft{color:var(--muted)}
+  .findus h1{font-size:clamp(44px,7vw,72px);color:var(--moss)}
+  .findus .addr{margin-top:14px;font-size:17px;color:var(--muted)}
+  .head .btn{margin-top:24px}
 
-  .highlights{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
-  .pill{display:flex;align-items:center;gap:8px;background:var(--mist);border:1px solid var(--line);border-radius:30px;padding:9px 16px;font-size:13.5px;font-weight:600;color:var(--leaf-dk)}
-  .pill svg{width:14px;height:14px;color:var(--leaf)}
-  .cta-row{margin-top:34px;display:flex;gap:14px;flex-wrap:wrap}
+  .map-wrap{margin:38px 0 0;border-radius:18px;overflow:hidden;box-shadow:var(--soft-shadow);border:1px solid var(--line);line-height:0}
+  .map-wrap iframe{width:100%;height:430px;border:0;display:block}
 
-  .closing{background:linear-gradient(180deg,#f4f8f2,#e8f1e6);text-align:center;padding:70px 0}
-  .closing h2{font-size:clamp(32px,5vw,48px);color:var(--moss)}
-  .closing p{color:var(--muted);font-size:16.5px;margin:14px 0 26px}
-
-  .divider{display:flex;align-items:center;justify-content:center;gap:16px;padding:8px 0}
-  .divider .ln{height:1px;width:80px;background:var(--line)}
-  .divider svg{width:26px;height:26px;color:var(--leaf);opacity:.8}
+  .info{padding:46px 0 80px}
+  .info-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  @media(max-width:720px){.info-grid{grid-template-columns:1fr}}
+  .info-card{background:var(--white);border:1px solid var(--line);border-radius:16px;padding:28px;box-shadow:var(--soft-shadow)}
+  .info-card .ic{width:46px;height:46px;border-radius:50%;background:var(--mint);display:flex;align-items:center;justify-content:center;margin-bottom:16px}
+  .info-card .ic svg{width:24px;height:24px;color:var(--leaf)}
+  .info-card h2{font-size:26px;color:var(--moss);margin-bottom:10px}
+  .info-card p{color:var(--ink);font-size:16px}
+  .info-card p .hl{color:var(--leaf-dk);font-weight:700}
 
   footer{background:var(--moss);color:#dfe9dc;padding:50px 0 36px}
   .foot-grid{display:flex;justify-content:space-between;gap:34px;flex-wrap:wrap}
@@ -96,59 +91,49 @@
       <div class="nav-links">
         <a href="index.html">Home</a>
         <a href="index.html#services">Services</a>
-        <a href="location.html">Find Us</a>
+        <a href="about.html">Meet Adam</a>
         <a class="btn" href="index.html#book">Book now</a>
       </div>
     </nav>
   </div>
 </div>
 
-<section class="about">
+<section class="findus">
   <svg class="sprig" viewBox="0 0 120 210"><use href="#sprig"/></svg>
-  <div class="wrap about-grid">
-    <div class="portrait">
-      <!-- To add Adam's photo: upload it to your repo as adam.jpeg, alongside index.html -->
-      <img src="adam.png" alt="Adam Ma, hairdresser at Spiky Hair Salon" onerror="this.style.display='none'">
-      <span class="ph"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.5"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>
-    </div>
-    <div>
+  <div class="wrap">
+    <div class="head">
       <span class="eyebrow">
         <svg viewBox="0 0 24 24" fill="none"><path d="M12 2C7 7 7 15 12 22C17 15 17 7 12 2Z" fill="#5f8d5a"/></svg>
-        Your hairdresser
+        How to find us
       </span>
-      <h1>Meet Adam</h1>
-      <div class="role">Hairdresser &amp; owner · Spiky Hair Salon</div>
+      <h1>Find Us</h1>
+      <p class="addr">548 Portrush Rd, Glen Osmond SA 5064</p>
+      <a class="btn" href="https://www.google.com/maps/dir/?api=1&destination=548+Portrush+Rd+Glen+Osmond+SA+5064" target="_blank" rel="noopener">Get directions</a>
+    </div>
 
-      <p>Adam Ma is the hairdresser behind Spiky Hair Salon — a single-chair studio tucked into Glen Osmond. One chair, one hairdresser, and one client at a time: every appointment is unhurried, private, and entirely about you. No crowded salon floor, no rushing off to the next person.</p>
-
-      <p>Whether it's a sharp men's cut, a fresh restyle, a colour or a perm, Adam takes the time to listen first and get the details right. His clients keep coming back for the calm, careful attention — and the relaxing wash that rounds off every visit.</p>
-
-      <p class="soft">The space reflects the way he likes to work: light, fresh and quiet — a spot to switch off for an hour and leave feeling like yourself again. Most days you'll find him here in Glen Osmond; on Tuesdays he works from home in Lightsview by request. He speaks English, Cantonese and Mandarin, so you're welcome in whichever feels most comfortable.</p>
-
-      <div class="highlights">
-        <span class="pill"><svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>One client at a time</span>
-        <span class="pill"><svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Cuts, colour, perms &amp; restyles</span>
-        <span class="pill"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.8 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8z"/></svg>4.9 from 12 happy clients</span>
-      </div>
-
-      <div class="cta-row">
-        <a class="btn" href="index.html#book">Book with Adam</a>
-      </div>
+    <div class="map-wrap">
+      <iframe
+        src="https://www.google.com/maps?q=548%20Portrush%20Rd,%20Glen%20Osmond%20SA%205064&output=embed"
+        loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+        title="Map to Spiky Hair Salon"></iframe>
     </div>
   </div>
 </section>
 
-<div class="divider">
-  <span class="ln"></span>
-  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C7 7 7 15 12 22C17 15 17 7 12 2Z"/></svg>
-  <span class="ln"></span>
-</div>
-
-<section class="closing">
+<section class="info">
   <div class="wrap">
-    <h2>Ready for a fresh cut?</h2>
-    <p>Pick a time that suits you — no account, no fuss.</p>
-    <a class="btn" href="index.html#book">Book your visit</a>
+    <div class="info-grid">
+      <div class="info-card">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none"><path d="M12 21s7-6 7-11a7 7 0 1 0-14 0c0 5 7 11 7 11Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><circle cx="12" cy="10" r="2.4" stroke="currentColor" stroke-width="1.6"/></svg></div>
+        <h2>Getting inside</h2>
+        <p>We're located under <span class="hl">Abergeldie House</span>. Once you come through the automatic sliding door, the salon is just on your <span class="hl">sharp left</span> — inside <span class="hl">Skin Solutions MediSpa</span>.</p>
+      </div>
+      <div class="info-card">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none"><path d="M3 13l2-5a2 2 0 0 1 1.9-1.3h10.2A2 2 0 0 1 19 8l2 5v5a1 1 0 0 1-1 1h-1a1 1 0 0 1-1-1v-1H6v1a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><circle cx="7" cy="14.5" r="1" fill="currentColor"/><circle cx="17" cy="14.5" r="1" fill="currentColor"/></svg></div>
+        <h2>Parking</h2>
+        <p><span class="hl">Free parking</span> is available on site. You'll find both <span class="hl">outdoor and undercover</span> spaces, so you're covered rain or shine.</p>
+      </div>
+    </div>
   </div>
 </section>
 

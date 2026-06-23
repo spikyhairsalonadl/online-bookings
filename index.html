@@ -198,6 +198,7 @@
         Spiky Hair Salon
       </div>
       <div class="nav-right">
+        <a class="nav-link" href="location.html">Find Us</a>
         <a class="nav-link" href="about.html">Meet Adam</a>
         <span class="nav-info"><b>548 Portrush Rd</b>, Glen Osmond · <b>Mon–Sat</b></span>
       </div>
@@ -325,7 +326,7 @@
       </div>
       <p style="margin-top:10px;max-width:32ch;color:#a8c2a4">A quiet, fresh place for a great haircut.</p>
     </div>
-    <div><h4>Find us</h4><a href="https://maps.google.com/?q=548+Portrush+Rd+Glen+Osmond+SA+5064" target="_blank" rel="noopener">548 Portrush Rd<br>Glen Osmond SA 5064</a></div>
+    <div><h4>Find us</h4><a href="https://maps.google.com/?q=548+Portrush+Rd+Glen+Osmond+SA+5064" target="_blank" rel="noopener">548 Portrush Rd<br>Glen Osmond SA 5064</a><a href="location.html">Map, parking &amp; directions →</a></div>
     <div><h4>Hours</h4><p>Mon · 10:00–17:00</p><p>Wed · 10:00–13:30</p><p>Thu–Fri · 10:00–17:00</p><p>Sat · 10:00–16:00</p><p>Tue · by request</p></div>
     <div><h4>Your hairdresser</h4><p>Adam Ma</p><p>★ 4.9 · 12 reviews</p></div>
   </div>
@@ -343,7 +344,7 @@ const LIVE = !/PASTE_YOUR/.test(SCRIPT_URL);
 const SALON = { name:"Spiky Hair Salon", barber:"Adam Ma", location:"548 Portrush Rd, Glen Osmond SA 5064" };
 const HOURS = { 0:null, 1:[600,1020], 2:null, 3:[600,810], 4:[600,1020], 5:[600,1020], 6:[600,960] };
 const SLOT_STEP = 15;
-const LUNCH = [null]; // daily break, minutes from midnight: 12:00–12:30 (set to null for none)
+const LUNCH = [720, 750]; // daily break, minutes from midnight: 12:00–12:30 (set to null for none)
 
 /* price: number sent to backend; priceText: optional display override */
 const SERVICES = [
