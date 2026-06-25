@@ -442,7 +442,7 @@ function renderSlots(){
 
   let html="", count=0;
   for(let t=open; t+dur<=close; t+=SLOT_STEP){
-    const past = isToday && t <= nowMins + 15;
+    const past = isToday && t <= nowMins + 120;
     const slotEnd = t + dur;
     const taken = state.busy.some(b => t < b.e && slotEnd > b.s);
     const lunch = LUNCH && t < LUNCH[1] && slotEnd > LUNCH[0];
